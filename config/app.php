@@ -195,6 +195,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
 
+        Mckenziearts\Notify\LaravelNotifyServiceProvider::class,
     ],
 
     /*

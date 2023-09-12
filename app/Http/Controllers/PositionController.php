@@ -16,7 +16,7 @@ class PositionController extends Controller
      */
     public function index()
     {
-        return view('positions.positions', [ 'positions' => Position::all() ]);
+        return view('positions.positions', ['positions' => Position::all()]);
     }
 
     /**
@@ -45,7 +45,14 @@ class PositionController extends Controller
             'position.max' => 'O campo posição deve ter no máximo :max caracteres.',
         ]);
 
-        $user = Position::create([ 'name' => $request->position]);
+        try {
+            Position::create(['name' => $request->position]);
+            // notify()->success('Cargo cadastrado com sucesso.');
+            drakify('success');
+        } catch (\Throwable $th) {
+            drakify('error');
+            // notify()->error('Erro ao cadastrar.');
+        }
 
         return Redirect::route('positions.index');
     }
@@ -69,7 +76,7 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        return view('positions.positions-edit', [ 'position' => $position ]);
+        return view('positions.positions-edit', ['position' => $position]);
     }
 
     /**
@@ -91,12 +98,12 @@ class PositionController extends Controller
         ]);
 
         // Atualize o registro no banco de dados com os novos dados do formulário
-        $position->update([ 'name' => $request->input('position') ]);
+        $position->update(['name' => $request->input('position')]);
 
         // Redirecione de v olta para a página de edição com uma mensagem de sucesso
-        return Redirect::route('positions.index', ['position' => $position])
-            ->with('tipo', 'success')
-            ->with('mensagem', 'Cargo atualizado com sucesso.');
+        notify()->success('Cargo atualizado com sucesso.');
+
+        return Redirect::route('positions.index', ['position' => $position]);
     }
 
     /**
@@ -110,7 +117,8 @@ class PositionController extends Controller
         // dd($position);
 
         $position->delete();
-
+        notify()->success('Cargo deletado com sucesso.');
+        drakify('error');
         return Redirect::route('positions.index')->with('success', 'Posição excluída com sucesso.');
         // return Redirect::to('/');
     }
